@@ -3,11 +3,11 @@ name: Publish package to NPM
 on:
     workflow_dispatch:
         inputs:
-            packagePath:
-                description: 'Package path'
-                required: false
-            tag:
-                description: 'Ref'
+            packageName:
+                description: 'Package name'
+                required: true
+            ref:
+                description: 'Revision'
                 required: false
     push:
         tags:
@@ -24,24 +24,20 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  ref: ${{ github.event.inputs.tag || github.ref_name }}
-            # - name: Use Node.js ${{ matrix.node-version }}
-            #   uses: actions/setup-node@v4
-            #   with:
-            #       node-version: ${{ matrix.node-version }}
-            # - run: npm ci
-            # - run: npm run build
-            # - run: npm test
+                  ref: ${{ github.event.inputs.ref || github.ref_name }}
             - name: Get package path
               run: |
-                  TEST_REF_NAME="${{ github.event.inputs.tag }}"
-                  echo $TEST_REF_NAME
-                  REF_NAME=${TEST_REF_NAME:-$GITHUB_REF_NAME}
-                  echo $REF_NAME
-                  PACKAGE_NAME="${REF_NAME/\/*/}"
-                  echo $PACKAGE_NAME
-                  PACKAGE_PATH_VAR="${{ github.event.inputs.packagePath }}"
-                  export PACKAGE_PATH=${PACKAGE_PATH_VAR:-$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)}
+                  # Package name from workflow input
+                  PACKAGE_NAME_VAR="${{ github.event.inputs.packageName }}"
+
+                  # Set PACKAGE_NAME to either provided variable 
+                  # or GITHUB_REF_NAME (e.g. sdk-core/0.1.2) with everything after "/" replaced
+                  PACKAGE_NAME="${PACKAGE_NAME_VAR:-${GITHUB_REF_NAME/\/*/}}"
+
+                  # Find PACKAGE_NAME in ./packages or ./tools and assign the path to PACKAGE_PATH
+                  PACKAGE_PATH=$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)
+
+                  # Export PACKAGE_PATH to other steps
                   echo "PACKAGE_PATH=${PACKAGE_PATH}" >> $GITHUB_ENV
             - name: Check if PACKAGE_PATH is set
               run: |
@@ -53,3 +49,4 @@ jobs:
             - run: npm ci
             - run: npm -w $PACKAGE_PATH run --if-present build
             - run: npm -w $PACKAGE_PATH run --if-present test
+            # - run: npm -w $PACKAGE_PATH publish
