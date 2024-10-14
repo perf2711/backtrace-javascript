@@ -42,7 +42,7 @@ jobs:
                   PACKAGE_NAME="${REF_NAME/\/*/}"
                   echo $PACKAGE_NAME
                   PACKAGE_PATH_VAR="${{ github.event.inputs.packagePath }}"
-                  PACKAGE_PATH=${PACKAGE_PATH_VAR:-$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)}
+                  export PACKAGE_PATH=${PACKAGE_PATH_VAR:-$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)}
                   echo $PACKAGE_PATH
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v4
