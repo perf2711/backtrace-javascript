@@ -34,7 +34,11 @@ jobs:
             - name: Get package path
               run: |
                   TEST_REF_NAME="${{ github.event.inputs.testRefName }}"
+                  echo $TEST_REF_NAME
                   REF_NAME=${TEST_REF_NAME:=GITHUB_REF_NAME}
+                  echo $REF_NAME
                   PACKAGE_NAME="${REF_NAME/\/*/}"
+                  echo $PACKAGE_NAME
                   PACKAGE_PATH=$(find ./packages ./tools -name "$PACKAGE_PATH" -maxdepth 1 -type d)
                   echo $PACKAGE_PATH
+                  echo "TEST"
