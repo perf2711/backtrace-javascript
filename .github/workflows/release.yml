@@ -39,5 +39,6 @@ jobs:
                   echo $REF_NAME
                   PACKAGE_NAME="${REF_NAME/\/*/}"
                   echo $PACKAGE_NAME
-                  PACKAGE_PATH=${PACKAGE_PATH:-$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)}
+                  PACKAGE_PATH_VAR="${{ github.event.inputs.packagePath }}"
+                  PACKAGE_PATH=${PACKAGE_PATH_VAR:-$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)}
                   echo $PACKAGE_PATH
