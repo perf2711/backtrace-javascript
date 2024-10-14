@@ -35,7 +35,7 @@ jobs:
                   PACKAGE_NAME="${PACKAGE_NAME_VAR:-${GITHUB_REF_NAME/\/*/}}"
 
                   # Find PACKAGE_NAME in ./packages or ./tools and assign the path to PACKAGE_PATH
-                  PACKAGE_PATH=$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)
+                  export PACKAGE_PATH=$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)
 
                   # Export PACKAGE_PATH to other steps
                   echo "PACKAGE_PATH=${PACKAGE_PATH}" >> $GITHUB_ENV
