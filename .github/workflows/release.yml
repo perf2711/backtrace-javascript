@@ -35,7 +35,7 @@ jobs:
               run: |
                   TEST_REF_NAME="${{ github.event.inputs.testRefName }}"
                   echo $TEST_REF_NAME
-                  REF_NAME=${TEST_REF_NAME:=GITHUB_REF_NAME}
+                  REF_NAME=${TEST_REF_NAME:-$GITHUB_REF_NAME}
                   echo $REF_NAME
                   PACKAGE_NAME="${REF_NAME/\/*/}"
                   echo $PACKAGE_NAME
