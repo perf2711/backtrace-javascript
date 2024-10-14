@@ -45,8 +45,7 @@ jobs:
                   echo "PACKAGE_PATH=${PACKAGE_PATH}" >> $GITHUB_ENV
             - name: Check if PACKAGE_PATH is set
               run: |
-                  set -u
-                  : "$PACKAGE_PATH"
+                  [[ -z "$PACKAGE_PATH" ]] && { echo "PACKAGE_PATH must be set."; exit 1; }
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v4
               with:
