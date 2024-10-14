@@ -39,6 +39,11 @@ jobs:
 
                   # Export PACKAGE_PATH to other steps
                   echo "PACKAGE_PATH=${PACKAGE_PATH}" >> $GITHUB_ENV
+
+                  echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
+                  echo "PACKAGE_NAME: $PACKAGE_NAME"
+                  echo "PACKAGE_PATH: $PACKAGE_PATH"
+
             - name: Check if PACKAGE_PATH is set
               run: |
                   [[ -z "$PACKAGE_PATH" ]] && { echo "PACKAGE_PATH must be set."; exit 1; }
