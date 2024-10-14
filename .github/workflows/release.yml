@@ -6,7 +6,6 @@ on:
             packagePath:
                 description: 'Package path'
                 required: false
-                default: './packages/sdk-core'
             tag:
                 description: 'Ref'
                 required: false
