@@ -44,10 +44,14 @@ jobs:
                   PACKAGE_PATH_VAR="${{ github.event.inputs.packagePath }}"
                   export PACKAGE_PATH=${PACKAGE_PATH_VAR:-$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)}
                   echo "PACKAGE_PATH=${PACKAGE_PATH}" >> $GITHUB_ENV
+            - name: Check if PACKAGE_PATH is set
+              run: |
+                  set -u
+                  : "$PACKAGE_PATH"
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node-version }}
             - run: npm ci
-            - run: npm -w $PACKAGE_PATH run build
-            - run: npm -w $PACKAGE_PATH test
+            - run: npm -w $PACKAGE_PATH run --if-present build
+            - run: npm -w $PACKAGE_PATH run --if-present test
