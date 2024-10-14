@@ -43,7 +43,7 @@ jobs:
                   echo $PACKAGE_NAME
                   PACKAGE_PATH_VAR="${{ github.event.inputs.packagePath }}"
                   export PACKAGE_PATH=${PACKAGE_PATH_VAR:-$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)}
-                  echo $PACKAGE_PATH
+                  echo "PACKAGE_PATH=${PACKAGE_PATH}" >> $GITHUB_ENV
             - name: Teest
               run: echo $PACKAGE_PATH
             # - name: Use Node.js ${{ matrix.node-version }}
