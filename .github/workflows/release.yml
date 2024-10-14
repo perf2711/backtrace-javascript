@@ -7,8 +7,8 @@ on:
                 description: 'Package path'
                 required: false
                 default: './packages/sdk-core'
-            testRefName:
-                description: 'Test ref name'
+            tag:
+                description: 'Ref'
                 required: false
     push:
         tags:
@@ -24,6 +24,8 @@ jobs:
 
         steps:
             - uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.inputs.tag || github.ref_name }}
             # - name: Use Node.js ${{ matrix.node-version }}
             #   uses: actions/setup-node@v4
             #   with:
@@ -33,7 +35,7 @@ jobs:
             # - run: npm test
             - name: Get package path
               run: |
-                  TEST_REF_NAME="${{ github.event.inputs.testRefName }}"
+                  TEST_REF_NAME="${{ github.event.inputs.tag }}"
                   echo $TEST_REF_NAME
                   REF_NAME=${TEST_REF_NAME:-$GITHUB_REF_NAME}
                   echo $REF_NAME
@@ -42,3 +44,10 @@ jobs:
                   PACKAGE_PATH_VAR="${{ github.event.inputs.packagePath }}"
                   PACKAGE_PATH=${PACKAGE_PATH_VAR:-$(find ./packages ./tools -name "$PACKAGE_NAME" -maxdepth 1 -type d)}
                   echo $PACKAGE_PATH
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - run: npm ci
+            - run: npm -w $PACKAGE_PATH run build
+            - run: npm -w $PACKAGE_PATH test
